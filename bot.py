@@ -132,7 +132,7 @@ if __name__ == "__main__":
     # Start Flask in a separate thread.
     Thread(target=run_flask).start()
 
-    scheduler = BackgroundScheduler()
+    scheduler = BackgroundScheduler(timezone=pytz.UTC)
     scheduler.add_job(ping_self, "interval", minutes=1)
     scheduler.start()
     ping_self()
