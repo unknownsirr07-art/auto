@@ -1,0 +1,13 @@
+.git
+.env
+__pycache__
+*.py[cod]
+*.log
+*.session
+*.session-journal
+Dockerfile
+docker-compose.yml
+render.yaml
+Procfile
+heroku.yml
+app.json

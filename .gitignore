@@ -1,0 +1,28 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# VS Code settings
+.vscode/
+
+# Glitch-specific or platform files
+.glitch-assets/
+
+# OS files
+.DS_Store
+Thumbs.db
+.local
