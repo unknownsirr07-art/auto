@@ -23,6 +23,11 @@ from datetime import date, datetime
 
 import pytz
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s: %(message)s",
+)
+
 class Bot(Client):
     def __init__(self):
         super().__init__(
@@ -84,13 +89,17 @@ app = Bot()
 def ping_self():
     url = os.environ.get("RENDER_EXTERNAL_URL")
     if not url:
+        logging.info("Self-ping skipped: RENDER_EXTERNAL_URL is not set")
         return
 
     try:
         response = requests.get(url, timeout=10)
-        logging.info("Self-ping status: %s", response.status_code)
+        if response.status_code == 200:
+            logging.info("Self-ping successful: %s", url)
+        else:
+            logging.error("Self-ping failed with status code %s", response.status_code)
     except requests.RequestException as exc:
-        logging.warning("Self-ping failed: %s", exc)
+        logging.error("Self-ping failed: %s", exc)
 
 flask_app = Flask(__name__)
 
@@ -122,11 +131,13 @@ async def main():
 if __name__ == "__main__":
     # Start Flask in a separate thread.
     Thread(target=run_flask).start()
-    
+
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(ping_self, "interval", minutes=1)
+    scheduler.start()
+    ping_self()
+
     # Start the bot
-loop = asyncio.get_event_loop()
-loop.run_until_complete(main())
-scheduler = BackgroundScheduler()
-scheduler.add_job(ping_self, "interval", minutes=1)
-scheduler.start()
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
 
