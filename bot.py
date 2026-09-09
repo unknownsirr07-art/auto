@@ -82,15 +82,15 @@ app = Bot()
 # ===============[ RENDER PORT UPTIME ISSUE FIXED ]================ #
 
 def ping_self():
-    url = "https://transparent-ribbon-target.glitch.me/alive"
+    url = os.environ.get("RENDER_EXTERNAL_URL")
+    if not url:
+        return
+
     try:
-        response = requests.get(url)
-        if response.status_code == 200:
-            logging.info("Ping successful!")
-        else:
-            logging.error(f"Ping failed with status code {response.status_code}")
-    except Exception as e:
-        logging.error(f"Ping failed with exception: {e}")
+        response = requests.get(url, timeout=10)
+        logging.info("Self-ping status: %s", response.status_code)
+    except requests.RequestException as exc:
+        logging.warning("Self-ping failed: %s", exc)
 
 flask_app = Flask(__name__)
 
